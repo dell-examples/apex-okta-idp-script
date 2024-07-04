@@ -1,27 +1,24 @@
-# apex-okta-idp-script
-- This is a sample script being given out to the customers to be able to fetch the access token to call APEX public APIs.
+# Dell APEX API auth token script
+- This is a sample script being given out to the customers to be able to fetch the auth token to call APEX public APIs.
 - The script fetches the SAML token by using IdP initiated SSO, and uses this SAML token along with the client id/script that the customer created via the APEX console, to exchange for a Access token which is used to call the APEX public APIs.
-- This script currently supports Okta IdP.
+- This script currently supports Okta and Azure Entra IdP.
 - Customers should be able to change this script according to their needs as the IdP configurations for different customers could be any number of combinations
 
-# Get a Dell Identity JSON web token
-The following procedures cover how to, first, configure the config.json file with information from your IdP and, second, run the provided script to retrieve a token.
+The following procedures cover how to, first, configure the configuration file used by the script, with information from your IdP
+and, second, run the provided script to retrieve a token.
 
 The requirements.txt file lists the libraries that the script depends on.
-Install those dependencies from the command line by running the following:
-pip install -r requirements.txt
-# Configure config.json:
 
-To get a Dell APEX web token, you will first need to retrieve information specific to your IdP and then input that information into the config.json file.
+# Get a Dell Identity JSON web token using Okta IDP
 
-The following procedures describe how to find each service's information:
+##Configure config.json:
 
-# Okta:
+To get a Dell APEX JSON web token, you will first need to retrieve information specific to Okta IDP and then input that information into the config.json file.
 
- Follow this procedure to configure the config.json file with the following information from Okta:
+Follow this procedure to configure the config.json file with the following information from Okta IDP:
 ```shell
    - SAML endpoint
-   - login endpoint
+   - Login endpoint
 ```
 1. In a browser, navigate to Okta and copy your login URL.
 2. In the config.json file, paste the URL as the value for saml_endpoint.
@@ -38,11 +35,16 @@ The following procedures describe how to find each service's information:
    This is the second half of your SAML endpoint.
 9. Save the changes made to the config.json file and proceed to the next section
 
-Retrieve token:
+## Retrieve token:
 
-To get a Dell Identity JSON web token:
-
-1. Run the saml_get_token.py file and select the desired IdP.
+1. If this is the first time you are running the script, install all the dependencies first by running the following:
+```console
+pip install -r requirements.txt
+```
+2. Run the saml_get_token.py file and select 'Okta' as the desired IdP.
+```
+python saml_get_token.py
+```
 2. Review the IdP URL configurations.
    If you choose to update the configurations, re-run the saml_get_token.py file.
 ```shell
@@ -54,3 +56,20 @@ To get a Dell Identity JSON web token:
 You will receive a Dell Identity JSON web token that can be used to make requests to the Dell APEX Navigator for Multicloud Storage API.
 
 The Dell Identity JSON web token expires after 30 minutes and cannot be renewed. To make further calls, generate a new token with an access key, secret, and SAML token.
+
+# Get a Dell Identity JSON web token using Azure Entra IDP
+
+## Configure config-entra.json:
+To get a Dell APEX JSON web token, you will first need to retrieve information specific to Azure Entra IDP and then input that information into the config-entra.json file.
+Update the config-entra.json by setting the saml_endpoint, username, password, saml_pipe, assertion_consumer_service_url, and entra_app_client_secret according to the directions in the config-entra.json.
+
+
+## Retrieve token:
+1. If this is the first time you are running the script, install all the dependencies first by running the following:
+```console
+pip install -r requirements.txt
+```
+2. Then, run
+```
+python saml_get_entra_token.py
+```
